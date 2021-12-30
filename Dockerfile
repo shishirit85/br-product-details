@@ -1,4 +1,2 @@
-FROM node:alpine
-COPY . /app
-WORKDIR /app
-CMD node index.html
+FROM httpd:alpine
+COPY ./ /usr/local/apache2/htdocs/
