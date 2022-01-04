@@ -2,39 +2,13 @@
 
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
-  <link rel="stylesheet" href="./assets/bootstrap.min.css">
-  <script src="./assets/jquery.min.js.download"></script>
-  <script src="./assets/papaparse.min.js.download"></script>
-  <title>Product Details From CSV</title>
-   
-  <style>
-	.pdfobject-container { height: 500px;}
-	.pdfobject { border: 1px solid #666; }
-	img{
-		width: 150px;
-		border: 1px solid #e2f5fb;
-        padding: 5px;
-		
-	}
-	.well{
-		background-color: transparent;
-		border: 0;
-	}
-	.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
-		border:0px solid #ddd !important;  
-	}
-	table tr {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-start;
-		flex-direction: row;
-	}
-	
-	table tr:nth-child(odd) {
-         background: #e2f5fb;
-        }
-
-  </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <link rel="icon" type="image/x-icon" href="https://www.bakerross.co.uk/media/favicon/default/favicon.ico"/>
+      <link rel="shortcut icon" type="image/x-icon" href="https://www.bakerross.co.uk/media/favicon/default/favicon.ico"/>
+      <link rel="stylesheet" href="./assets/bootstrap.min.css">
+      <link rel="stylesheet" href="./assets/style.css">
+      <script src="./assets/jquery.min.js"></script><script src="./assets/papaparse.min.js"></script>
+      <title>Baker Ross Product Details From CSV</title>
 </head>
 <body>
   <div class="container" style="padding:10px 10px;">
@@ -53,7 +27,16 @@
 			 </div>
 		</form>
 		</div>
-		<div class="row" <div="" id="parsed_csv_list">
+		<div class="search-bar">
+            
+            <input id="productSearch" type="text" placeholder="Search product SKU, Name..." class="input-text">
+            <div id="search_autocomplete" class="search-autocomplete" style="display: none;"></div>
+            
+            <button type="submit" title="Search" class="action search" disabled>
+            </button>
+        </div>
+
+		<div class="row" id="parsed_csv_list">
 			</div>
 		</div>
 	</div>
@@ -89,46 +72,62 @@
     });
 	
 	function displayHTMLTable(results){
-		var table = "<table class='table'>";
+		var table = "<table>";
 		var data = results.data;
 		 
 		for(i=1;i<data.length-1;i++){
-			table+= "<tr>";
+			table+= "<tr><table><tr>";
 			var row = data[i];
 			var cells = row.join(",").split(",");
-			 
+		
+				
 			for(j=0;j<cells.length;j++){
+				
 				switch (j){
 					case 0:
                     table+= "<td><b>SKU:</b> ";
 						table+= '<a href="#'+cells[j].replace(/"/g, "")+'">'+cells[j].replace(/"/g, "")+'</a>';
-						table+= "</th>";
+						table+= "</td>";
 						break;
 					case 1:
                     table+= "<td><b>Name:</b> ";
 						table+= cells[j].replace(/"/g, "");
-						table+= "</th>";
+						table+= "</td>";
 						break;
 					case 2:
                     table+= "<td><b>URL:</b> ";
 						table+= '<a href="'+cells[j].replace(/"/g, "")+'">'+cells[j].replace(/"/g, "")+'</a>';
-						table+= "</th>";
+						table+= "</td>";
 						table +="</tr><tr>"
 						break;
 					default:
 						table+= "<td>";
 						table+= `<img src="${cells[j]}">`;
-						table+= "</th>";
+						table+= "</td>  ";
 						break;
 				}
 
 				}
 			}
-			table+= "</tr>";
+			table+= "</tr></table></tr>";
 		
 		table+= "</table>";
 		$("#parsed_csv_list").html(table);
 		$(".form-inline").css("display","none");
+		$("#productSearch").css("display","block");
 	}
 });
-</script></body></html>
+</script>
+
+<script>
+	$(document).ready(function(){
+	  $("#productSearch").on("keyup", function() {
+		var value = $(this).val().toLowerCase();
+		$("#parsed_csv_list table").filter(function() {
+		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		});
+	  });
+	});
+	</script>
+	
+</body></html>
